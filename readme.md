@@ -96,7 +96,7 @@ PALEONTOLOGY.MODE = "buried"   -- DEFAULT: Buried 3-6 nodes underground (dig to 
 
 | ⛏️ **Buried Mode — Underground Discovery** | 🚧 **Exposed Mode — Fenced Excavation Site** |
 | :---: | :---: |
-| ![Buried Fossil Discovery Placeholder](models/Preview.gif) | ![Exposed Excavation Site Placeholder](models/Preview.gif) |
+| ![Buried Fossil Discovery Placeholder]() | ![Exposed Excavation Site Placeholder]() |
 | *Unearthing a massive bone-white skeleton 5 nodes beneath the surface.* | *A complete surface dig pit enclosed by a 2-node-high wooden fence perimeter.* |
 
 ---
