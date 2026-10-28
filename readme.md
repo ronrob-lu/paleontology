@@ -92,17 +92,14 @@ PALEONTOLOGY.MODE = "buried"   -- DEFAULT: Buried 3-6 nodes underground (dig to 
 
 ## 📸 Screenshots
 
-> *Add your in-game expedition screenshots below!*
-
 | ⛏️ **Buried Mode — Underground Discovery** | 🚧 **Exposed Mode — Fenced Excavation Site** |
 | :---: | :---: |
-| ![Buried Fossil Discovery Placeholder]() | ![Exposed Excavation Site Placeholder]() |
-| *Unearthing a massive bone-white skeleton 5 nodes beneath the surface.* | *A complete surface dig pit enclosed by a 2-node-high wooden fence perimeter.* |
+| ![Buried Fossil Discovery](screenshot-buried.png) | ![Exposed Excavation Site](screenshot-exposed.png) |
+| *Unearthing a massive voxel skeleton beneath the surface.* | *A complete surface dig pit enclosed by a 2-node-high wooden fence perimeter.* |
 
 ---
 
 ## 🏆 Credits & License
 
 * **Created & Engineered by:** **ronrob-lu (2026)**
-* **3D Dinosaur Models:** LowPoly Dinosaur Models by `@Quaternius` (CC0 1.0 Public Domain) + Built-in Procedural Lua Skeleton Generator.
 * **License:** Released under the [MIT License](license.md) — Copyright (c) 2026 **ronrob-lu**.

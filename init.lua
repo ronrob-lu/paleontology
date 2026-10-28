@@ -495,6 +495,29 @@ register_bone_node("bone_claw", "Dinosaur Foot & Claws Bone", {
 	{  0.26, -0.50,  0.28,  0.40, -0.30,  0.48 }, -- Right sharp claw tip
 })
 
+-- 10. Dinosaur Horn / Tail Spike (Tapering long bone horn for Triceratops & Stegosaurus)
+register_bone_node("bone_horn", "Dinosaur Horn / Tail Spike Bone", {
+	{ -0.22, -0.36, -0.50,  0.22,  0.04, -0.18 }, -- Thick horn base
+	{ -0.17, -0.22, -0.22,  0.17,  0.14,  0.10 }, -- Mid-lower horn shaft
+	{ -0.12, -0.06,  0.04,  0.12,  0.28,  0.34 }, -- Mid-upper tapering horn
+	{ -0.07,  0.12,  0.26,  0.07,  0.44,  0.50 }, -- Sharp projecting horn tip
+})
+
+-- 11. Dinosaur Dorsal Plate / Frill Shield (Diamond plate for Stegosaurus, Spinosaurus & Triceratops)
+register_bone_node("bone_plate", "Dinosaur Dorsal Plate / Frill Bone", {
+	{ -0.14, -0.50, -0.36,  0.14, -0.18,  0.36 }, -- Root base anchored in spine
+	{ -0.10, -0.20, -0.48,  0.10,  0.16,  0.48 }, -- Wide diamond middle blade
+	{ -0.08,  0.14, -0.34,  0.08,  0.38,  0.34 }, -- Upper diamond taper
+	{ -0.05,  0.36, -0.16,  0.05,  0.50,  0.16 }, -- Sharp dorsal apex peak
+})
+
+-- 12. Pterosaur Wing Spar Bone (Slender elongated wing finger bone for Pteranodon)
+register_bone_node("bone_wing", "Pterosaur Wing Finger Bone", {
+	{ -0.50, -0.08, -0.10,  0.50,  0.10,  0.10 }, -- Long primary wing finger spar
+	{ -0.48, -0.14, -0.18, -0.28,  0.16,  0.18 }, -- Wing joint knuckle
+	{ -0.10, -0.06, -0.48,  0.08,  0.06, -0.08 }, -- Trailing wing membrane strut
+})
+
 -- Crafting cycle so players can reshape any dug bone block into any other bone part
 local craft_cycle = {
 	"paleontology:bone_vertebra",
@@ -506,6 +529,9 @@ local craft_cycle = {
 	"paleontology:bone_limb",
 	"paleontology:bone_tail",
 	"paleontology:bone_claw",
+	"paleontology:bone_horn",
+	"paleontology:bone_plate",
+	"paleontology:bone_wing",
 }
 if minetest and minetest.register_craft then
 	for i = 1, #craft_cycle do
@@ -540,17 +566,20 @@ function PALEONTOLOGY.build_procedural_skeleton_obj()
 end
 
 -- ============================================================================
--- VOXEL DINOSAUR SKELETON BLUEPRINTS (10 to 13 Nodes Long, Lying Horizontally)
+-- 6 DISTINCT VOXEL DINOSAUR SKELETON BLUEPRINTS
 -- ============================================================================
--- Each blueprint is an articulated 3D voxel skeleton made of small diggable
--- bone nodeboxes (skull, toothed jaw, neck, spine, hollow curved ribs, pelvis,
--- folded femurs/shins, 3-toed claws, and sweeping tail).
---
--- Local coordinate convention before horizontal rotation (dir = 0..3):
---   dz : Length axis from tail (-5..-6) to skull/snout (+4..+6)
---   dx : Width axis from left side (-3) to right side (+3)
---   dy : Vertical elevation relative to skeleton base (0 = ground/pit floor, 1 = upper arch)
---   dir: Local facedir (0 = +Z forward, 1 = +X right, 2 = -Z back, 3 = -X left)
+-- 1. Tyrannosaurus Rex : Bipedal apex predator with 2-story skull, tiny chest
+--                        arms, striding 3-joint hind legs, and straight tail.
+-- 2. Apatosaurus       : 16-node-long giant sauropod with 7-node curving swan
+--                        neck rising to dy=2, barrel ribcage, and whip tail.
+-- 3. Triceratops       : 3-block-wide tall bone frill shield + 3 long horns
+--                        projecting from the brow & nose, stocky body.
+-- 4. Stegosaurus       : Tiny low head, high-arched back (dy=2..3) topped with
+--                        diamond dorsal plates, and 4 tail spikes (thagomizer).
+-- 5. Spinosaurus       : Narrow 3-node crocodilian snout and a towering
+--                        3-block-tall dorsal neural sail along its back.
+-- 6. Pteranodon        : Giant flying reptile skeleton with backward cranial
+--                        crest, toothless beak, and 13-node outstretched wings!
 -- ============================================================================
 
 function PALEONTOLOGY.get_voxel_blueprints()
@@ -563,34 +592,38 @@ function PALEONTOLOGY.get_voxel_blueprints()
 	local LB = "paleontology:bone_limb"
 	local TL = "paleontology:bone_tail"
 	local CL = "paleontology:bone_claw"
+	local HN = "paleontology:bone_horn"
+	local PL = "paleontology:bone_plate"
+	local WG = "paleontology:bone_wing"
 
 	return {
-		-- 1. TYRANNOSAURUS REX VOXEL SKELETON (11 nodes long, 5 nodes wide)
+		-- 1. TYRANNOSAURUS REX (Bipedal Predator: Giant 2-story skull, tiny arms, striding hind legs)
 		{
+			id = "rex",
 			species = "Tyrannosaurus Rex",
-			length = 11,
-			width = 5,
+			length = 13,
+			width = 7,
 			nodes = {
-				-- Giant 2-tier Skull & Toothed Jaws at front (+Z)
+				-- Colossal 2-story T-Rex Skull & Toothed Jaws (cocked slightly left in death pose)
+				{ dx = -1, dy = 1, dz =  4, name = SK, dir = 0 },
 				{ dx =  0, dy = 1, dz =  4, name = SK, dir = 0 },
-				{ dx =  0, dy = 1, dz =  5, name = JW, dir = 0 },
+				{ dx = -1, dy = 0, dz =  4, name = SK, dir = 0 },
 				{ dx =  0, dy = 0, dz =  4, name = SK, dir = 0 },
+				{ dx = -1, dy = 1, dz =  5, name = JW, dir = 0 },
+				{ dx =  0, dy = 1, dz =  5, name = JW, dir = 0 },
+				{ dx = -1, dy = 0, dz =  5, name = JW, dir = 0 },
 				{ dx =  0, dy = 0, dz =  5, name = JW, dir = 0 },
 
-				-- Curved Cervical Neck
-				{ dx =  0, dy = 0, dz =  3, name = V,  dir = 0 },
+				-- Muscular S-Curved Cervical Neck
 				{ dx =  0, dy = 1, dz =  3, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz =  2, name = V,  dir = 0 },
 
-				-- Dorsal Spine (Elevated along the back of the ribcage)
+				-- Dorsal Spine + Short Neural Crest
 				{ dx =  0, dy = 1, dz =  1, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz =  0, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz = -1, name = V,  dir = 0 },
 
-				-- Hollow Curved Ribcage (4 pairs of upper & lower ribs on Left and Right)
-				-- Left ribs (dx = -1 upper arch, dx = -2 lower curve)
-				{ dx = -1, dy = 1, dz =  2, name = R,  dir = 2 },
-				{ dx = -2, dy = 0, dz =  2, name = RT, dir = 2 },
+				-- Deep Theropod Ribcage
 				{ dx = -1, dy = 1, dz =  1, name = R,  dir = 2 },
 				{ dx = -2, dy = 0, dz =  1, name = RT, dir = 2 },
 				{ dx = -1, dy = 1, dz =  0, name = R,  dir = 2 },
@@ -598,9 +631,6 @@ function PALEONTOLOGY.get_voxel_blueprints()
 				{ dx = -1, dy = 1, dz = -1, name = R,  dir = 2 },
 				{ dx = -2, dy = 0, dz = -1, name = RT, dir = 2 },
 
-				-- Right ribs (dx = +1 upper arch, dx = +2 lower curve)
-				{ dx =  1, dy = 1, dz =  2, name = R,  dir = 0 },
-				{ dx =  2, dy = 0, dz =  2, name = RT, dir = 0 },
 				{ dx =  1, dy = 1, dz =  1, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz =  1, name = RT, dir = 0 },
 				{ dx =  1, dy = 1, dz =  0, name = R,  dir = 0 },
@@ -608,101 +638,128 @@ function PALEONTOLOGY.get_voxel_blueprints()
 				{ dx =  1, dy = 1, dz = -1, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz = -1, name = RT, dir = 0 },
 
-				-- T-Rex Forearms & Claws
-				{ dx = -2, dy = 0, dz =  3, name = CL, dir = 0 },
-				{ dx =  2, dy = 0, dz =  3, name = CL, dir = 0 },
+				-- Signature Tiny 2-Clawed T-Rex Forearms tucked high on the chest (NO front legs!)
+				{ dx = -1, dy = 0, dz =  2, name = CL, dir = 0 },
+				{ dx =  1, dy = 0, dz =  2, name = CL, dir = 0 },
 
-				-- Pelvic Girdle & Folded Hind Legs (Femur + Tibia + 3-Toed Claws)
+				-- Massive Bipedal Pelvis & Striding Hind Legs (Left leg forward, Right leg back!)
 				{ dx =  0, dy = 1, dz = -2, name = PV, dir = 0 },
 				{ dx =  0, dy = 0, dz = -2, name = PV, dir = 0 },
+				-- Left hind leg striding forward
 				{ dx = -1, dy = 0, dz = -2, name = LB, dir = 3 },
-				{ dx = -2, dy = 0, dz = -2, name = LB, dir = 0 },
-				{ dx = -2, dy = 0, dz = -3, name = LB, dir = 0 },
-				{ dx = -2, dy = 0, dz = -4, name = CL, dir = 2 },
+				{ dx = -2, dy = 0, dz = -1, name = LB, dir = 0 },
+				{ dx = -3, dy = 0, dz =  0, name = LB, dir = 0 },
+				{ dx = -3, dy = 0, dz =  1, name = CL, dir = 0 },
+				-- Right hind leg extended backward
 				{ dx =  1, dy = 0, dz = -2, name = LB, dir = 1 },
-				{ dx =  2, dy = 0, dz = -2, name = LB, dir = 0 },
 				{ dx =  2, dy = 0, dz = -3, name = LB, dir = 0 },
-				{ dx =  2, dy = 0, dz = -4, name = CL, dir = 2 },
+				{ dx =  3, dy = 0, dz = -4, name = LB, dir = 0 },
+				{ dx =  3, dy = 0, dz = -3, name = CL, dir = 0 },
 
-				-- Sweeping S-Curved Caudal Tail (dz = -3 to -6)
-				{ dx =  0, dy = 0, dz = -3, name = TL, dir = 0 },
-				{ dx =  0, dy = 0, dz = -4, name = TL, dir = 0 },
-				{ dx =  1, dy = 0, dz = -5, name = TL, dir = 0 },
-				{ dx =  1, dy = 0, dz = -6, name = TL, dir = 0 },
+				-- Long Rigid Counterbalance Tail (dz = -3 to -7)
+				{ dx =  0, dy = 1, dz = -3, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -4, name = TL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -5, name = TL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -6, name = TL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -7, name = TL, dir = 0 },
 			},
 		},
 
-		-- 2. APATOSAURUS SAUROPOD VOXEL SKELETON (13 nodes long, 5 nodes wide)
+		-- 2. APATOSAURUS (16-Node Colossal Sauropod: 7-block curving swan neck + whip tail)
 		{
+			id = "apatosaurus",
 			species = "Apatosaurus",
-			length = 13,
-			width = 5,
+			length = 16,
+			width = 7,
 			nodes = {
-				-- Sauropod Skull & Snout at end of long curving neck
-				{ dx = -1, dy = 0, dz =  6, name = JW, dir = 0 },
-				{ dx = -1, dy = 0, dz =  5, name = SK, dir = 0 },
+				-- Delicate Sauropod Head perched at the end of a 7-block curving swan neck!
+				{ dx = -3, dy = 2, dz =  7, name = JW, dir = 3 },
+				{ dx = -2, dy = 2, dz =  7, name = SK, dir = 3 },
 
-				-- Long Sweeping Cervical Neck (dz = +2 to +4)
-				{ dx = -1, dy = 0, dz =  4, name = V,  dir = 0 },
-				{ dx =  0, dy = 0, dz =  3, name = V,  dir = 0 },
+				-- Long Curving Swan Neck (sweeping from center chest out and up to dy = 2)
+				{ dx = -2, dy = 2, dz =  6, name = V,  dir = 0 },
+				{ dx = -1, dy = 2, dz =  5, name = V,  dir = 0 },
+				{ dx = -1, dy = 1, dz =  4, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz =  3, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz =  2, name = V,  dir = 0 },
 
-				-- Massive Dorsal Spine (dz = -2 to +1)
-				{ dx =  0, dy = 1, dz =  1, name = V,  dir = 0 },
-				{ dx =  0, dy = 1, dz =  0, name = V,  dir = 0 },
-				{ dx =  0, dy = 1, dz = -1, name = V,  dir = 0 },
+				-- High Sauropod Backbone (dy = 2)
+				{ dx =  0, dy = 2, dz =  1, name = V,  dir = 0 },
+				{ dx =  0, dy = 2, dz =  0, name = V,  dir = 0 },
+				{ dx =  0, dy = 2, dz = -1, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz = -2, name = PV, dir = 0 },
 
-				-- Deep Barrel Ribcage
-				{ dx = -1, dy = 1, dz =  1, name = R,  dir = 2 },
+				-- Huge 2-Story Barrel Ribcage
+				{ dx = -1, dy = 2, dz =  1, name = R,  dir = 2 },
+				{ dx = -2, dy = 1, dz =  1, name = R,  dir = 2 },
 				{ dx = -2, dy = 0, dz =  1, name = RT, dir = 2 },
-				{ dx = -1, dy = 1, dz =  0, name = R,  dir = 2 },
+				{ dx = -1, dy = 2, dz =  0, name = R,  dir = 2 },
+				{ dx = -2, dy = 1, dz =  0, name = R,  dir = 2 },
 				{ dx = -2, dy = 0, dz =  0, name = RT, dir = 2 },
-				{ dx = -1, dy = 1, dz = -1, name = R,  dir = 2 },
+				{ dx = -1, dy = 2, dz = -1, name = R,  dir = 2 },
+				{ dx = -2, dy = 1, dz = -1, name = R,  dir = 2 },
 				{ dx = -2, dy = 0, dz = -1, name = RT, dir = 2 },
 
-				{ dx =  1, dy = 1, dz =  1, name = R,  dir = 0 },
+				{ dx =  1, dy = 2, dz =  1, name = R,  dir = 0 },
+				{ dx =  2, dy = 1, dz =  1, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz =  1, name = RT, dir = 0 },
-				{ dx =  1, dy = 1, dz =  0, name = R,  dir = 0 },
+				{ dx =  1, dy = 2, dz =  0, name = R,  dir = 0 },
+				{ dx =  2, dy = 1, dz =  0, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz =  0, name = RT, dir = 0 },
-				{ dx =  1, dy = 1, dz = -1, name = R,  dir = 0 },
+				{ dx =  1, dy = 2, dz = -1, name = R,  dir = 0 },
+				{ dx =  2, dy = 1, dz = -1, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz = -1, name = RT, dir = 0 },
 
-				-- Front & Rear Pillar Legs
+				-- 4 Massive Tree-Trunk Pillar Legs
 				{ dx = -2, dy = 0, dz =  2, name = LB, dir = 3 },
 				{ dx = -3, dy = 0, dz =  2, name = CL, dir = 3 },
 				{ dx =  2, dy = 0, dz =  2, name = LB, dir = 1 },
 				{ dx =  3, dy = 0, dz =  2, name = CL, dir = 1 },
-
 				{ dx = -2, dy = 0, dz = -2, name = LB, dir = 3 },
 				{ dx = -3, dy = 0, dz = -2, name = CL, dir = 3 },
 				{ dx =  2, dy = 0, dz = -2, name = LB, dir = 1 },
 				{ dx =  3, dy = 0, dz = -2, name = CL, dir = 1 },
 
-				-- Long Whip-Like Caudal Tail (dz = -3 to -6)
-				{ dx =  0, dy = 0, dz = -3, name = TL, dir = 0 },
+				-- Long Bullwhip Tail (dz = -3 to -8)
+				{ dx =  0, dy = 1, dz = -3, name = TL, dir = 0 },
 				{ dx =  0, dy = 0, dz = -4, name = TL, dir = 0 },
 				{ dx =  1, dy = 0, dz = -5, name = TL, dir = 0 },
-				{ dx =  2, dy = 0, dz = -6, name = TL, dir = 0 },
+				{ dx =  1, dy = 0, dz = -6, name = TL, dir = 0 },
+				{ dx =  2, dy = 0, dz = -7, name = TL, dir = 0 },
+				{ dx =  3, dy = 0, dz = -8, name = TL, dir = 1 },
 			},
 		},
 
-		-- 3. TRICERATOPS FRILLED VOXEL SKELETON (10 nodes long, 5 nodes wide)
+		-- 3. TRICERATOPS (Three Long Projecting Horns + Giant 3-Wide Fan Frill Shield!)
 		{
+			id = "triceratops",
 			species = "Triceratops",
-			length = 10,
-			width = 5,
+			length = 11,
+			width = 7,
 			nodes = {
-				-- Beaked Horned Snout & Wide Bone Frill Crest
-				{ dx =  0, dy = 0, dz =  4, name = JW, dir = 0 },
-				{ dx =  0, dy = 1, dz =  4, name = JW, dir = 0 },
-				{ dx =  0, dy = 0, dz =  3, name = SK, dir = 0 },
-				{ dx =  0, dy = 1, dz =  3, name = SK, dir = 0 },
-				{ dx = -1, dy = 1, dz =  2, name = PV, dir = 3 }, -- Left frill shield
-				{ dx =  0, dy = 1, dz =  2, name = SK, dir = 0 }, -- Center frill crest
-				{ dx =  1, dy = 1, dz =  2, name = PV, dir = 1 }, -- Right frill shield
+				-- 3 Iconic Projecting Horns at the front of the skull!
+				{ dx =  0, dy = 1, dz =  5, name = HN, dir = 0 }, -- Front nasal horn
+				{ dx = -1, dy = 2, dz =  4, name = HN, dir = 0 }, -- Left long brow horn
+				{ dx =  1, dy = 2, dz =  4, name = HN, dir = 0 }, -- Right long brow horn
 
-				-- Dorsal Spine & Ribcage
+				-- Heavy Beaked Skull
+				{ dx =  0, dy = 0, dz =  4, name = JW, dir = 0 },
+				{ dx =  0, dy = 1, dz =  4, name = SK, dir = 0 },
+				{ dx = -1, dy = 1, dz =  3, name = SK, dir = 0 },
+				{ dx =  0, dy = 1, dz =  3, name = SK, dir = 0 },
+				{ dx =  1, dy = 1, dz =  3, name = SK, dir = 0 },
+
+				-- Giant 3-Block-Wide, 2-Block-Tall Fan-Shaped Neck Frill Crest!
+				{ dx = -2, dy = 1, dz =  2, name = PL, dir = 1 },
+				{ dx = -1, dy = 2, dz =  2, name = PL, dir = 1 },
+				{ dx =  0, dy = 2, dz =  2, name = PL, dir = 1 },
+				{ dx =  1, dy = 2, dz =  2, name = PL, dir = 1 },
+				{ dx =  2, dy = 1, dz =  2, name = PL, dir = 1 },
+				{ dx = -1, dy = 1, dz =  2, name = SK, dir = 0 },
+				{ dx =  0, dy = 1, dz =  2, name = SK, dir = 0 },
+				{ dx =  1, dy = 1, dz =  2, name = SK, dir = 0 },
+
+				-- Stocky Ceratopsian Spine & Ribcage
 				{ dx =  0, dy = 1, dz =  1, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz =  0, name = V,  dir = 0 },
 				{ dx =  0, dy = 1, dz = -1, name = V,  dir = 0 },
@@ -722,20 +779,193 @@ function PALEONTOLOGY.get_voxel_blueprints()
 				{ dx =  1, dy = 1, dz = -1, name = R,  dir = 0 },
 				{ dx =  2, dy = 0, dz = -1, name = RT, dir = 0 },
 
-				-- Sturdy Quadruped Limbs
+				-- Wide-Stance Quadruped Legs
 				{ dx = -2, dy = 0, dz =  2, name = LB, dir = 0 },
-				{ dx = -2, dy = 0, dz =  3, name = CL, dir = 0 },
+				{ dx = -3, dy = 0, dz =  2, name = CL, dir = 0 },
 				{ dx =  2, dy = 0, dz =  2, name = LB, dir = 0 },
-				{ dx =  2, dy = 0, dz =  3, name = CL, dir = 0 },
+				{ dx =  3, dy = 0, dz =  2, name = CL, dir = 0 },
 				{ dx = -2, dy = 0, dz = -2, name = LB, dir = 2 },
-				{ dx = -2, dy = 0, dz = -3, name = CL, dir = 2 },
+				{ dx = -3, dy = 0, dz = -2, name = CL, dir = 2 },
 				{ dx =  2, dy = 0, dz = -2, name = LB, dir = 2 },
-				{ dx =  2, dy = 0, dz = -3, name = CL, dir = 2 },
+				{ dx =  3, dy = 0, dz = -2, name = CL, dir = 2 },
 
-				-- Tail
+				-- Short Heavy Ceratopsian Tail
 				{ dx =  0, dy = 0, dz = -3, name = TL, dir = 0 },
 				{ dx =  0, dy = 0, dz = -4, name = TL, dir = 0 },
-				{ dx = -1, dy = 0, dz = -5, name = TL, dir = 0 },
+			},
+		},
+
+		-- 4. STEGOSAURUS (High-Arched Back + Double Row of Diamond Dorsal Plates + 4 Tail Spikes!)
+		{
+			id = "stegosaurus",
+			species = "Stegosaurus",
+			length = 12,
+			width = 6,
+			nodes = {
+				-- Characteristic Tiny Low Head close to the ground!
+				{ dx =  0, dy = 0, dz =  5, name = JW, dir = 0 },
+				{ dx =  0, dy = 0, dz =  4, name = SK, dir = 0 },
+				{ dx =  0, dy = 0, dz =  3, name = V,  dir = 0 },
+
+				-- Dramatically Arched Spine rising up to dy = 2 in the center!
+				{ dx =  0, dy = 1, dz =  2, name = V,  dir = 0 },
+				{ dx =  0, dy = 2, dz =  1, name = V,  dir = 0 },
+				{ dx =  0, dy = 2, dz =  0, name = V,  dir = 0 },
+				{ dx =  0, dy = 2, dz = -1, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz = -2, name = PV, dir = 0 },
+
+				-- Iconic Alternating Diamond Dorsal Plates rising to dy = 2 and dy = 3!
+				{ dx =  0, dy = 1, dz =  3, name = PL, dir = 0 },
+				{ dx = -1, dy = 2, dz =  2, name = PL, dir = 0 },
+				{ dx =  1, dy = 3, dz =  1, name = PL, dir = 0 },
+				{ dx = -1, dy = 3, dz =  0, name = PL, dir = 0 },
+				{ dx =  1, dy = 3, dz = -1, name = PL, dir = 0 },
+				{ dx = -1, dy = 2, dz = -2, name = PL, dir = 0 },
+				{ dx =  0, dy = 2, dz = -3, name = PL, dir = 0 },
+
+				-- Arched Ribcage
+				{ dx = -1, dy = 1, dz =  1, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz =  1, name = RT, dir = 2 },
+				{ dx = -1, dy = 1, dz =  0, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz =  0, name = RT, dir = 2 },
+				{ dx = -1, dy = 1, dz = -1, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz = -1, name = RT, dir = 2 },
+
+				{ dx =  1, dy = 1, dz =  1, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz =  1, name = RT, dir = 0 },
+				{ dx =  1, dy = 1, dz =  0, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz =  0, name = RT, dir = 0 },
+				{ dx =  1, dy = 1, dz = -1, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz = -1, name = RT, dir = 0 },
+
+				-- Short Front Legs & Tall Rear Legs
+				{ dx = -2, dy = 0, dz =  2, name = CL, dir = 0 },
+				{ dx =  2, dy = 0, dz =  2, name = CL, dir = 0 },
+				{ dx = -2, dy = 0, dz = -2, name = LB, dir = 3 },
+				{ dx = -2, dy = 0, dz = -3, name = CL, dir = 2 },
+				{ dx =  2, dy = 0, dz = -2, name = LB, dir = 1 },
+				{ dx =  2, dy = 0, dz = -3, name = CL, dir = 2 },
+
+				-- Tail + 4 Lethal Thagomizer Tail Spikes sticking out Left & Right!
+				{ dx =  0, dy = 1, dz = -3, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -4, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -5, name = TL, dir = 0 },
+				{ dx = -1, dy = 1, dz = -4, name = HN, dir = 3 }, -- Left anterior tail spike
+				{ dx =  1, dy = 1, dz = -4, name = HN, dir = 1 }, -- Right anterior tail spike
+				{ dx = -1, dy = 1, dz = -5, name = HN, dir = 3 }, -- Left posterior tail spike
+				{ dx =  1, dy = 1, dz = -5, name = HN, dir = 1 }, -- Right posterior tail spike
+			},
+		},
+
+		-- 5. SPINOSAURUS (Towering 3-Block-Tall Dorsal Sail + Long Crocodilian Snout!)
+		{
+			id = "spinosaurus",
+			species = "Spinosaurus",
+			length = 15,
+			width = 6,
+			nodes = {
+				-- Long, Narrow 3-Block Crocodilian Snout & Jaws
+				{ dx =  0, dy = 0, dz =  6, name = JW, dir = 0 },
+				{ dx =  0, dy = 0, dz =  5, name = JW, dir = 0 },
+				{ dx =  0, dy = 0, dz =  4, name = SK, dir = 0 },
+				{ dx =  0, dy = 1, dz =  4, name = HN, dir = 0 }, -- Nasal head crest
+				{ dx =  0, dy = 1, dz =  3, name = V,  dir = 0 },
+
+				-- Dorsal Spine (dz = -2 to +2)
+				{ dx =  0, dy = 1, dz =  2, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz =  1, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz =  0, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz = -1, name = V,  dir = 0 },
+				{ dx =  0, dy = 1, dz = -2, name = PV, dir = 0 },
+
+				-- Towering 3-Block-Tall Dorsal Sail along the back (dy = 2 and dy = 3)!
+				{ dx =  0, dy = 2, dz =  2, name = PL, dir = 0 },
+				{ dx =  0, dy = 2, dz =  1, name = PL, dir = 0 },
+				{ dx =  0, dy = 3, dz =  1, name = PL, dir = 0 },
+				{ dx =  0, dy = 2, dz =  0, name = PL, dir = 0 },
+				{ dx =  0, dy = 3, dz =  0, name = PL, dir = 0 },
+				{ dx =  0, dy = 2, dz = -1, name = PL, dir = 0 },
+				{ dx =  0, dy = 3, dz = -1, name = PL, dir = 0 },
+				{ dx =  0, dy = 2, dz = -2, name = PL, dir = 0 },
+
+				-- Ribcage
+				{ dx = -1, dy = 1, dz =  1, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz =  1, name = RT, dir = 2 },
+				{ dx = -1, dy = 1, dz =  0, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz =  0, name = RT, dir = 2 },
+				{ dx = -1, dy = 1, dz = -1, name = R,  dir = 2 },
+				{ dx = -2, dy = 0, dz = -1, name = RT, dir = 2 },
+
+				{ dx =  1, dy = 1, dz =  1, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz =  1, name = RT, dir = 0 },
+				{ dx =  1, dy = 1, dz =  0, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz =  0, name = RT, dir = 0 },
+				{ dx =  1, dy = 1, dz = -1, name = R,  dir = 0 },
+				{ dx =  2, dy = 0, dz = -1, name = RT, dir = 0 },
+
+				-- Hooked Forelimb Claws & Hind Legs
+				{ dx = -2, dy = 0, dz =  2, name = CL, dir = 0 },
+				{ dx =  2, dy = 0, dz =  2, name = CL, dir = 0 },
+				{ dx = -2, dy = 0, dz = -2, name = LB, dir = 0 },
+				{ dx = -2, dy = 0, dz = -3, name = CL, dir = 2 },
+				{ dx =  2, dy = 0, dz = -2, name = LB, dir = 0 },
+				{ dx =  2, dy = 0, dz = -3, name = CL, dir = 2 },
+
+				-- Long Finned Paddle Tail (dz = -3 to -7)
+				{ dx =  0, dy = 0, dz = -3, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -3, name = PL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -4, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -4, name = PL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -5, name = TL, dir = 0 },
+				{ dx =  0, dy = 1, dz = -5, name = PL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -6, name = TL, dir = 0 },
+				{ dx =  0, dy = 0, dz = -7, name = TL, dir = 0 },
+			},
+		},
+
+		-- 6. PTERANODON (Giant Flying Reptile with 13-Node Outstretched Skeletal Wingspan!)
+		{
+			id = "pteranodon",
+			species = "Pteranodon",
+			length = 9,
+			width = 13,
+			nodes = {
+				-- Long Pointed Beak + Backward Cranial Crest!
+				{ dx =  0, dy = 0, dz =  4, name = JW, dir = 0 },
+				{ dx =  0, dy = 0, dz =  3, name = JW, dir = 0 },
+				{ dx =  0, dy = 0, dz =  2, name = SK, dir = 0 },
+				{ dx =  0, dy = 1, dz =  2, name = HN, dir = 2 }, -- Backward cranial crest
+				{ dx =  0, dy = 1, dz =  1, name = HN, dir = 2 },
+
+				-- Compact Hollow Avian Torso
+				{ dx =  0, dy = 0, dz =  1, name = V,  dir = 0 },
+				{ dx =  0, dy = 0, dz =  0, name = V,  dir = 0 },
+				{ dx =  0, dy = 0, dz = -1, name = PV, dir = 0 },
+				{ dx = -1, dy = 0, dz =  0, name = R,  dir = 2 },
+				{ dx =  1, dy = 0, dz =  0, name = R,  dir = 0 },
+
+				-- Giant Outstretched Left Skeletal Wing (dx = -1 to -6)
+				{ dx = -1, dy = 0, dz =  1, name = LB, dir = 3 },
+				{ dx = -2, dy = 0, dz =  1, name = WG, dir = 0 },
+				{ dx = -3, dy = 0, dz =  1, name = WG, dir = 0 },
+				{ dx = -3, dy = 0, dz =  2, name = CL, dir = 0 }, -- Wing-bend thumb claw
+				{ dx = -4, dy = 0, dz =  0, name = WG, dir = 0 },
+				{ dx = -5, dy = 0, dz = -1, name = WG, dir = 0 },
+				{ dx = -6, dy = 0, dz = -2, name = WG, dir = 0 },
+
+				-- Giant Outstretched Right Skeletal Wing (dx = +1 to +6)
+				{ dx =  1, dy = 0, dz =  1, name = LB, dir = 1 },
+				{ dx =  2, dy = 0, dz =  1, name = WG, dir = 2 },
+				{ dx =  3, dy = 0, dz =  1, name = WG, dir = 2 },
+				{ dx =  3, dy = 0, dz =  2, name = CL, dir = 0 }, -- Wing-bend thumb claw
+				{ dx =  4, dy = 0, dz =  0, name = WG, dir = 2 },
+				{ dx =  5, dy = 0, dz = -1, name = WG, dir = 2 },
+				{ dx =  6, dy = 0, dz = -2, name = WG, dir = 2 },
+
+				-- Slender Trailing Hind Feet & Short Tail Stub
+				{ dx = -1, dy = 0, dz = -2, name = CL, dir = 2 },
+				{ dx =  1, dy = 0, dz = -2, name = CL, dir = 2 },
+				{ dx =  0, dy = 0, dz = -2, name = TL, dir = 0 },
 			},
 		},
 	}
@@ -855,7 +1085,9 @@ minetest.register_entity("paleontology:skeleton", {
 					z = math.floor(pos.z + 0.5),
 				}
 				local bps = PALEONTOLOGY.get_voxel_blueprints()
-				PALEONTOLOGY.place_voxel_skeleton(base_pos, bps[1], math.random(0, 3), data.mode ~= "exposed")
+				local chosen = bps[math.random(1, #bps)]
+				data.species = chosen.species
+				PALEONTOLOGY.place_voxel_skeleton(base_pos, chosen, math.random(0, 3), data.mode ~= "exposed")
 			end
 		end
 
@@ -1095,7 +1327,10 @@ function PALEONTOLOGY.notify_nearby_players(pos, mode, species)
 	end
 end
 
-function PALEONTOLOGY.spawn_fossil_site(surface_pos, mode, rng)
+-- Round-robin counter so consecutive spawns always cycle through all 6 distinct dinosaur species
+PALEONTOLOGY._spawn_counter = 0
+
+function PALEONTOLOGY.spawn_fossil_site(surface_pos, mode, rng, requested_species)
 	if not surface_pos then
 		return nil
 	end
@@ -1103,8 +1338,25 @@ function PALEONTOLOGY.spawn_fossil_site(surface_pos, mode, rng)
 	mode = (mode == "exposed") and "exposed" or "buried"
 
 	local blueprints = PALEONTOLOGY.get_voxel_blueprints()
-	local bp_idx = rng and rng:next(1, #blueprints) or math.random(1, #blueprints)
-	local blueprint = blueprints[bp_idx]
+	local blueprint = nil
+
+	-- If a specific species name/id was requested (e.g., via /spawn_fossil exposed stegosaurus)
+	if type(requested_species) == "string" and requested_species ~= "" then
+		local q = requested_species:lower()
+		for _, bp in ipairs(blueprints) do
+			if (bp.id and bp.id:lower():find(q, 1, true))
+				or (bp.species and bp.species:lower():find(q, 1, true)) then
+				blueprint = bp
+				break
+			end
+		end
+	end
+
+	-- Otherwise cycle through all 6 species so every spawned fossil is a different dinosaur
+	if not blueprint then
+		PALEONTOLOGY._spawn_counter = (PALEONTOLOGY._spawn_counter % #blueprints) + 1
+		blueprint = blueprints[PALEONTOLOGY._spawn_counter]
+	end
 
 	-- Random horizontal cardinal rotation (0, 90, 180, or 270 degrees)
 	local rot_steps = rng and rng:next(0, 3) or math.random(0, 3)
@@ -1164,7 +1416,7 @@ function PALEONTOLOGY.spawn_fossil_site(surface_pos, mode, rng)
 		skeleton_base_pos.z
 	))
 
-	return obj, skeleton_base_pos
+	return obj, skeleton_base_pos, blueprint.species
 end
 
 -- ============================================================================
@@ -1254,8 +1506,8 @@ end)
 
 if minetest and minetest.register_chatcommand then
 	minetest.register_chatcommand("spawn_fossil", {
-		params = "[buried|exposed]",
-		description = "Spawn a large diggable voxel dinosaur skeleton at your position (defaults to PALEONTOLOGY.MODE)",
+		params = "[buried|exposed] [rex|apatosaurus|triceratops|stegosaurus|spinosaurus|pteranodon]",
+		description = "Spawn a diggable voxel dinosaur skeleton at your position (cycles through all 6 species or specify one)",
 		privs = {},
 		func = function(name, param)
 			local player = minetest.get_player_by_name(name)
@@ -1267,8 +1519,21 @@ if minetest and minetest.register_chatcommand then
 				return false, "Unable to determine player position."
 			end
 
-			local mode = param and param:lower():match("^%s*(%S+)%s*$") or ""
-			if mode ~= "buried" and mode ~= "exposed" then
+			local args = {}
+			for word in tostring(param or ""):lower():gmatch("%S+") do
+				args[#args + 1] = word
+			end
+
+			local mode = nil
+			local requested_species = nil
+			for _, w in ipairs(args) do
+				if w == "buried" or w == "exposed" then
+					mode = w
+				else
+					requested_species = w
+				end
+			end
+			if not mode then
 				mode = (PALEONTOLOGY.MODE == "exposed") and "exposed" or "buried"
 			end
 
@@ -1278,11 +1543,12 @@ if minetest and minetest.register_chatcommand then
 				z = math.floor(ppos.z + 0.5),
 			}
 
-			local _, spawned_pos = PALEONTOLOGY.spawn_fossil_site(target_pos, mode, nil)
+			local _, spawned_pos, species_name = PALEONTOLOGY.spawn_fossil_site(target_pos, mode, nil, requested_species)
 			if spawned_pos then
 				return true, string.format(
-					"[Paleontology] Spawned %s voxel dinosaur skeleton at (%d, %d, %d)! Dig the bone blocks to collect & rebuild!",
+					"[Paleontology] Spawned %s %s voxel skeleton at (%d, %d, %d)! Dig the bone blocks to collect & rebuild!",
 					mode,
+					tostring(species_name or "Dinosaur"),
 					math.floor(spawned_pos.x),
 					math.floor(spawned_pos.y),
 					math.floor(spawned_pos.z)
